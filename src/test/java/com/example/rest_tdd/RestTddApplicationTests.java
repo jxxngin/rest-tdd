@@ -1,6 +1,8 @@
 package com.example.rest_tdd;
 
 import com.example.rest_tdd.domain.member.member.controller.ApiV1MemberController;
+import com.example.rest_tdd.domain.member.member.entity.Member;
+import com.example.rest_tdd.domain.member.member.service.MemberService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,6 +29,9 @@ class RestTddApplicationTests {
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private MemberService memberService;
 
     @Test
     @DisplayName("회원 가입")
@@ -45,6 +51,10 @@ class RestTddApplicationTests {
                                 )
                 )
                 .andDo(print());
+
+        Member member = memberService.findByUsername("usernew").get();
+
+        assertThat(member.getNickname()).isEqualTo("무명");
 
         resultActions
                 .andExpect(status().isCreated())
