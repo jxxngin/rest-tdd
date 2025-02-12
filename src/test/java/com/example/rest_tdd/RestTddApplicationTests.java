@@ -1,5 +1,6 @@
 package com.example.rest_tdd;
 
+import com.example.rest_tdd.domain.member.member.controller.ApiV1MemberController;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -33,7 +34,11 @@ class RestTddApplicationTests {
 				.andDo(print());
 
 		resultActions
-				.andExpect(status().isCreated());
+				.andExpect(status().isCreated())
+				.andExpect(handler().handlerType(ApiV1MemberController.class))
+				.andExpect(handler().methodName("join"))
+				.andExpect(jsonPath("$.code").value("201-1"))
+				.andExpect(jsonPath("$.msg").value("회원 가입이 완료되었습니다."));
 	}
 
 }
