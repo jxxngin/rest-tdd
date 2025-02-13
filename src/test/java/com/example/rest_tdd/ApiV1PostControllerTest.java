@@ -87,10 +87,11 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.msg").value("존재하지 않는 글입니다."));
     }
 
-    private ResultActions writeRequest(String title, String content) throws Exception {
+    private ResultActions writeRequest(String apiKey, String title, String content) throws Exception {
         return mvc
                 .perform(
                         post("/api/v1/posts")
+                                .header("Authorization", "Bearer "  + apiKey)
                                 .content("""
                                         {
                                             "title": "%s",
@@ -109,10 +110,11 @@ public class ApiV1PostControllerTest {
     @Test
     @DisplayName("글 작성")
     void write1() throws Exception {
+        String apiKey = "user1";
         String title = "새로운 글 제목";
         String content = "새로운 글 내용";
 
-        ResultActions resultActions = writeRequest(title, content);
+        ResultActions resultActions = writeRequest(apiKey, title, content);
 
         Post post = postService.getLatestItem().get();
 
