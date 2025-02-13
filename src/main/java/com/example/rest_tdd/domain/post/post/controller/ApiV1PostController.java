@@ -22,8 +22,6 @@ public class ApiV1PostController {
 
     @GetMapping("{id}")
     public RsData<PostDto> getItem(@PathVariable long id) {
-        Member actor = rq.getAuthenticatedActor();
-
         Post post = postService.getItem(id).orElseThrow(
                 () -> new ServiceException(
                         "404-1",
@@ -31,7 +29,10 @@ public class ApiV1PostController {
                 )
         );
 
-        post.canRead(actor);
+        if(!post.isPublished()) {
+            Member actor = rq.getAuthenticatedActor();
+            post.canRead(actor);
+        }
 
         return new RsData<>(
                 "200-1",
