@@ -59,11 +59,13 @@ public class ApiV1MemberController {
 
     @PostMapping("/login")
     public RsData<LoginResBody> login(@RequestBody LoginReqBody reqBody) {
-        Member member = memberService.findByUsername(reqBody.username()).get();
+        Member member = memberService.findByUsername(reqBody.username()).orElseThrow(
+                () -> new ServiceException("401-1", "잘못된 아이디입니다.")
+        );
 
         if (!member.getPassword().equals(reqBody.password())) {
             throw new ServiceException(
-                    "401-1",
+                    "401-2",
                     "비밀번호가 일치하지 않습니다."
             );
         }
