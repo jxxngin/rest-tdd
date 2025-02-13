@@ -41,16 +41,20 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.modifiedDate").value(matchesPattern(post.getModifiedDate().toString().replaceAll("0+$", "") + ".*")));
     }
 
-    @Test
-    @DisplayName("글 단건 조회")
-    void item() throws Exception {
-        long postId = 1;
-
-        ResultActions resultActions = mvc
+    private ResultActions itemRequest(long postId) throws Exception {
+        return mvc
                 .perform(
                         get("/api/v1/posts/%d".formatted(postId))
                 )
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("글 단건 조회 1")
+    void item1() throws Exception {
+        long postId = 1;
+
+        ResultActions resultActions =itemRequest(postId);
 
         resultActions
                 .andExpect(status().isOk())
@@ -63,4 +67,20 @@ public class ApiV1PostControllerTest {
 
         checkPost(resultActions, post);
     }
+
+    @Test
+    @DisplayName("글 단건 조회 2 - 없는 글 조회")
+    void item2() throws Exception {
+        long postId = 100000;
+
+        ResultActions resultActions = itemRequest(postId);
+
+        resultActions
+                .andExpect(status().isNotFound())
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("getItem"))
+                .andExpect(jsonPath("$.code").value("404-1"))
+                .andExpect(jsonPath("$.msg").value("존재하지 않는 글입니다."));
+    }
+
 }
