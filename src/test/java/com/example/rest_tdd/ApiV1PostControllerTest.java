@@ -284,4 +284,20 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.msg").value("잘못된 인증키입니다.".formatted(postId)));
     }
 
+    @Test
+    @DisplayName("글 삭제3 - no permission")
+    void delete3() throws Exception {
+        long postId = 1;
+        String apiKey = "user2";
+
+        ResultActions resultActions = deleteRequest(postId, apiKey);
+
+        resultActions
+                .andExpect(status().isForbidden())
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("delete"))
+                .andExpect(jsonPath("$.code").value("403-1"))
+                .andExpect(jsonPath("$.msg").value("자신이 작성한 글만 삭제 가능합니다."));
+    }
+
 }
