@@ -204,4 +204,25 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.msg").value("잘못된 인증키 입니다.".formatted(postId)));
     }
 
+    @Test
+    @DisplayName("글 수정 3 - no input data")
+    void modify3() throws Exception {
+        long postId = 1;
+        String apiKey = "user1";
+        String title = "";
+        String content = "";
+
+        ResultActions resultActions = modifyRequest(postId, apiKey, title, content);
+
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("modify"))
+                .andExpect(jsonPath("$.code").value("400-1"))
+                .andExpect(jsonPath("$.msg").value("""
+                        content : NotBlank : must not be blank
+                        title : NotBlank : must not be blank
+                        """.trim().stripIndent()));
+    }
+
 }
