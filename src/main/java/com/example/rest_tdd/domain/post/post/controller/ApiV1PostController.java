@@ -60,6 +60,8 @@ public class ApiV1PostController {
 
     @PutMapping("{id}")
     public RsData<PostDto> modify(@PathVariable long id, @RequestBody @Valid ModifyReqBody reqBody) {
+        Member actor = rq.getAuthenticatedActor();
+
         Post post = postService.getItem(id).orElseThrow(
                 () -> new ServiceException(
                         "404-1",
@@ -67,6 +69,7 @@ public class ApiV1PostController {
                 )
         );
 
+        post.canModify(actor);
         postService.modify(post, reqBody.title(), reqBody.content());
 
         return new RsData<>(
