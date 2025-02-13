@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Transactional
-class RestTddApplicationTests {
+class ApiV1MemberControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -110,7 +110,7 @@ class RestTddApplicationTests {
                         post("/api/v1/members/login")
                                 .content("""
                                         {
-                                            "username" : "user1",
+                                            "username" : "user2",
                                             "password" : "1234"
                                         }
                                         """.stripIndent())
@@ -128,10 +128,10 @@ class RestTddApplicationTests {
                 .andExpect(handler().handlerType(ApiV1MemberController.class))
                 .andExpect(handler().methodName("login"))
                 .andExpect(jsonPath("$.code").value("200-1"))
-                .andExpect(jsonPath("$.msg").value("%s님 환영합니다.".formatted("유저1")))
+                .andExpect(jsonPath("$.msg").value("%s님 환영합니다.".formatted("유저2")))
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.data.id").isNumber())
-                .andExpect(jsonPath("$.data.nickname").value("무명"))
+                .andExpect(jsonPath("$.data.nickname").value("유저2"))
                 .andExpect(jsonPath("$.data.createdDate").exists())
                 .andExpect(jsonPath("$.data.modifiedDate").exists());
     }
