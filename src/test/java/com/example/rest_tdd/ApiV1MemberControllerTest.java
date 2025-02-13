@@ -124,7 +124,7 @@ class ApiV1MemberControllerTest {
                         """.trim().stripIndent()));
     }
 
-    private ResultActions loingRequest(String username, String password) throws Exception {
+    private ResultActions loginRequest(String username, String password) throws Exception {
         return mvc
                 .perform(
                         post("/api/v1/members/login")
@@ -154,7 +154,7 @@ class ApiV1MemberControllerTest {
         String password = "user11234";
 
         // 요청
-        ResultActions resultActions = loingRequest(username, password);
+        ResultActions resultActions = loginRequest(username, password);
         Member member = memberService.findByUsername(username).get();
 
         // 응답 (요청 처리 결과)
@@ -179,7 +179,7 @@ class ApiV1MemberControllerTest {
         String password = "1234";
 
         // 요청
-        ResultActions resultActions = loingRequest(username, password);
+        ResultActions resultActions = loginRequest(username, password);
 
         // 응답 (요청 처리 결과)
         resultActions
@@ -196,7 +196,7 @@ class ApiV1MemberControllerTest {
         String username = "aaaaa";
         String password = "1234";
 
-        ResultActions resultActions = loingRequest(username, password);
+        ResultActions resultActions = loginRequest(username, password);
 
         resultActions
                 .andExpect(status().isUnauthorized())
@@ -212,7 +212,7 @@ class ApiV1MemberControllerTest {
         String username = "";
         String password = "123123";
 
-        ResultActions resultActions = loingRequest(username, password);
+        ResultActions resultActions = loginRequest(username, password);
 
         resultActions
                 .andExpect(status().isBadRequest())
@@ -228,7 +228,7 @@ class ApiV1MemberControllerTest {
         String username = "123123";
         String password = "";
 
-        ResultActions resultActions = loingRequest(username, password);
+        ResultActions resultActions = loginRequest(username, password);
 
         resultActions
                 .andExpect(status().isBadRequest())
