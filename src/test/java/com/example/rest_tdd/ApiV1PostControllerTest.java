@@ -44,20 +44,22 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.modifiedDate").value(matchesPattern(post.getModifiedDate().toString().replaceAll("0+$", "") + ".*")));
     }
 
-    private ResultActions itemRequest(long postId) throws Exception {
+    private ResultActions itemRequest(long postId, String apiKey) throws Exception {
         return mvc
                 .perform(
                         get("/api/v1/posts/%d".formatted(postId))
+                                .header("Authorization", "Bearer " + apiKey)
                 )
                 .andDo(print());
     }
 
     @Test
-    @DisplayName("글 단건 조회 1")
+    @DisplayName("글 단건 조회 1 - 다른 유저의 공개글 조회")
     void item1() throws Exception {
         long postId = 1;
+        String apiKey = "user2";
 
-        ResultActions resultActions =itemRequest(postId);
+        ResultActions resultActions =itemRequest(postId, apiKey);
 
         resultActions
                 .andExpect(status().isOk())
@@ -75,8 +77,9 @@ public class ApiV1PostControllerTest {
     @DisplayName("글 단건 조회 2 - 없는 글 조회")
     void item2() throws Exception {
         long postId = 100000;
+        String apiKey = "user1";
 
-        ResultActions resultActions = itemRequest(postId);
+        ResultActions resultActions = itemRequest(postId, apiKey);
 
         resultActions
                 .andExpect(status().isNotFound())
@@ -84,6 +87,22 @@ public class ApiV1PostControllerTest {
                 .andExpect(handler().methodName("getItem"))
                 .andExpect(jsonPath("$.code").value("404-1"))
                 .andExpect(jsonPath("$.msg").value("존재하지 않는 글입니다."));
+    }
+
+    @Test
+    @DisplayName("글 단건 조회 3 - 다른 유저의 비공개 글 조회")
+    void item3() throws Exception {
+        long postId = 1;
+        String apiKey = "user2";
+
+        ResultActions resultActions = itemRequest(postId, apiKey);
+
+        resultActions
+                .andExpect(status().isForbidden())
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("getItem"))
+                .andExpect(jsonPath("$.code").value("403-1"))
+                .andExpect(jsonPath("$.msg").value("비공개 설정된 글입니다."));
     }
 
     private ResultActions writeRequest(String apiKey, String title, String content) throws Exception {
@@ -281,7 +300,7 @@ public class ApiV1PostControllerTest {
                 .andExpect(handler().handlerType(ApiV1PostController.class))
                 .andExpect(handler().methodName("delete"))
                 .andExpect(jsonPath("$.code").value("401-1"))
-                .andExpect(jsonPath("$.msg").value("잘못된 인증키입니다.".formatted(postId)));
+                .andExpect(jsonPath("$.msg").value("잘못된 인증키 입니다.".formatted(postId)));
     }
 
     @Test
