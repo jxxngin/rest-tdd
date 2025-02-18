@@ -4,6 +4,7 @@ import com.example.rest_tdd.domain.member.member.entity.Member;
 import com.example.rest_tdd.domain.post.post.entity.Post;
 import com.example.rest_tdd.domain.post.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +60,8 @@ public class PostService {
     }
 
     public List<Post> getListedItems() {
-        return postRepository.findByListed(true);
+        PageRequest pageRequest = PageRequest.of(0, 3);
+        return postRepository.findByListed(true, pageRequest);
     }
 
 }
