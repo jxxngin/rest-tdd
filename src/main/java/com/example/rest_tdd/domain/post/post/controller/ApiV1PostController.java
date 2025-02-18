@@ -38,6 +38,22 @@ public class ApiV1PostController {
         );
     }
 
+    @GetMapping("/mine")
+    public RsData<PageDto> getMines(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "3") int pageSize,
+            @RequestParam(defaultValue = "title") String keywordType,
+            @RequestParam(defaultValue = "") String keyword
+    ) {
+        Member actor = rq.getAuthenticatedActor();
+        Page<Post> pagePost = postService.getMines(actor, page, pageSize, keywordType, keyword);
+
+        return new RsData<>("200-1",
+                "내 글 목록 조회가 완료되었습니다.",
+                new PageDto(pagePost)
+        );
+    }
+
     @GetMapping("{id}")
     public RsData<PostDto> getItem(@PathVariable long id) {
         Post post = postService.getItem(id).orElseThrow(
