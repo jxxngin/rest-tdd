@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,6 +37,7 @@ public class ApiV1CommentControllerTest {
     @DisplayName("댓글 작성")
     void write() throws Exception {
         long postId = 1;
+
         String apiKey = "user1";
         String content = "댓글 내용";
 
@@ -65,6 +66,40 @@ public class ApiV1CommentControllerTest {
                 .andExpect(handler().methodName("write"))
                 .andExpect(jsonPath("$.code").value("201-1"))
                 .andExpect(jsonPath("$.msg").value("%d번 댓글 작성이 완료되었습니다.".formatted(comment.getId())));
+    }
+
+    @Test
+    @DisplayName("댓글 수정")
+    void modify() throws Exception {
+        long postId = 1;
+        long commentId = 1;
+
+        String apiKey = "user1";
+        String content = "댓글 내용";
+
+        ResultActions resultActions = mvc
+                .perform(
+                        put("/api/v1/posts/%d/comments/%d".formatted(postId, commentId))
+                                .header("Authorization", "Bearer " + apiKey)
+                                .content("""
+                                        {
+                                            "content": "%s"
+                                        }
+                                        """
+                                        .formatted(content)
+                                        .stripIndent())
+                                .contentType(
+                                        new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8)
+                                )
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(ApiV1CommentController.class))
+                .andExpect(handler().methodName("modify"))
+                .andExpect(jsonPath("$.code").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 댓글 수정이 완료되었습니다.".formatted(commentId)));
     }
 
 }
