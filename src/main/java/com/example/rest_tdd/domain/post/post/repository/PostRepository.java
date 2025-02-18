@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findTopByOrderByIdDesc();
     Page<Post> findByListed(boolean listed, PageRequest pageRequest);
+    Page<Post> findByListedAndTitleLike(boolean b, String keyword, PageRequest pageRequest);
 }

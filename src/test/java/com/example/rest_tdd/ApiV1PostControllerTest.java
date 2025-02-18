@@ -67,7 +67,7 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.currentPageNo").isNumber()) // 현재 페이지
                 .andExpect(jsonPath("$.data.totalPages").isNumber()); // 전체 페이지 개수
 
-        Page<Post> postPage = postService.getListedItems(1, 3);
+        Page<Post> postPage = postService.getListedItems(1, 3, "title", "");
         List<Post> posts = postPage.getContent();
 
         for(int i = 0; i < posts.size(); i++) {
@@ -115,7 +115,7 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.totalPages").value(3))
                 .andExpect(jsonPath("$.data.totalItems").value(7));
 
-        Page<Post> postPage = postService.getListedItems(page, pageSize);
+        Page<Post> postPage = postService.getListedItems(page, pageSize, keywordType, keyword);
         List<Post> posts = postPage.getContent();
 
         for(int i = 0; i < posts.size(); i++) {
