@@ -217,7 +217,7 @@ public class ApiV1PostControllerTest {
         long postId = 1;
         String apiKey = "";
 
-        ResultActions resultActions =itemRequest(postId, apiKey);
+        ResultActions resultActions = itemRequest(postId, apiKey);
 
         resultActions
                 .andExpect(status().isOk())

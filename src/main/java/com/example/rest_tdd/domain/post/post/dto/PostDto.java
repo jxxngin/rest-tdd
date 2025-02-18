@@ -12,10 +12,8 @@ public class PostDto {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private String title;
-
     private long authorId;
     private String authorName;
-
     private boolean published;
     private boolean listed;
 
@@ -24,10 +22,8 @@ public class PostDto {
         this.createdDate = post.getCreatedDate();
         this.modifiedDate = post.getModifiedDate();
         this.title = post.getTitle();
-
         this.authorId = post.getAuthor().getId();
         this.authorName = post.getAuthor().getNickname();
-
         this.published = post.isPublished();
         this.listed = post.isListed();
     }
