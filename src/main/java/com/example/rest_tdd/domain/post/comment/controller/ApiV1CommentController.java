@@ -9,10 +9,10 @@ import com.example.rest_tdd.global.Rq;
 import com.example.rest_tdd.global.dto.RsData;
 import com.example.rest_tdd.global.exception.ServiceException;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +31,7 @@ public class ApiV1CommentController {
     private final EntityManager em;
 
     @GetMapping
+    @Transactional(readOnly = true)
     public List<CommentDto> getItems(@PathVariable long postId) {
         Post post = postService.getItem(postId).orElseThrow(
                 () -> new ServiceException(
@@ -46,6 +47,7 @@ public class ApiV1CommentController {
     }
 
     @GetMapping("{id}")
+    @Transactional(readOnly = true)
     public CommentDto getItem(@PathVariable long postId, @PathVariable long id) {
         Post post = postService.getItem(postId).orElseThrow(
                 () -> new ServiceException(
