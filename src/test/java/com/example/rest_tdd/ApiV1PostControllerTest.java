@@ -63,7 +63,7 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.code").value("200-1"))
                 .andExpect(jsonPath("$.msg").value("글 목록 조회가 완료되었습니다."));
 
-        List<Post> posts = postService.getItems();
+        List<Post> posts = postService.getListedItems();
 
         for(int i = 0; i < posts.size(); i++) {
             Post post = posts.get(i);
